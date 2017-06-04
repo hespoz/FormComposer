@@ -110,7 +110,7 @@ export default class FormEntryListView extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginBottom: 5,textAlign: 'center'
+        marginBottom: 5
     },
     row: {
         flexDirection: 'row',

@@ -43,6 +43,7 @@ export default class InputControl extends Component {
                 }}
                 secureTextEntry={field.type === 'password'}
                 value={field.value}
+                defaultValue=''
             />
         );
     }

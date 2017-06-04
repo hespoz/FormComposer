@@ -39,6 +39,9 @@ class FormView extends Component {
 
   }
 
+  componentWillMount = () => {
+      this.setState({});
+  }
 
   updateFormState = (newForm) => {
     this.setState({form:newForm});
@@ -55,13 +58,15 @@ class FormView extends Component {
                 if(this.state.formIdSaved == null){
 
                     var id = results.rows.item(0).id;
-                    var instances = results.rows.item(0).numberIntances;
+                    var instances = results.rows.item(0).numberInstances;
                     instances++;
 
                     DBHelper.insertFormEntry(tx, JSON.stringify(formToSave) ,id, (tx,res) => {
 
-                        DBHelper.updateFormNumberInstances(instances, id);
-                        this.setState({formIdSaved:res.insertId});
+                        DBHelper.updateFormNumberInstances(tx, instances, id , (tx, res) => {
+                            this.setState({formIdSaved:res.insertId});
+                        });
+
 
                     });
 
@@ -113,19 +118,19 @@ class FormView extends Component {
 
             switch(field.type){
               case 'text': case 'password':
-                  return (<InputControl index={index} form={this.state.form} updateFormState={this.updateFormState}/>);
+                  return (<InputControl key={index} index={index} form={this.state.form} updateFormState={this.updateFormState}/>);
                 break;
               case 'checkbox':
-                  return (<CheckBoxControl index={index} form={this.state.form} updateFormState={this.updateFormState}/>)
+                  return (<CheckBoxControl key={index} index={index} form={this.state.form} updateFormState={this.updateFormState}/>)
                   break;
               case 'date':
-                return(<DatePickerControl index={index} form={this.state.form} updateFormState={this.updateFormState}/>);
+                return(<DatePickerControl key={index} index={index} form={this.state.form} updateFormState={this.updateFormState}/>);
                   break;
               case 'select':
-                return (<DropDownControl index={index} form={this.state.form} updateFormState={this.updateFormState}/>);
+                return (<DropDownControl key={index} index={index} form={this.state.form} updateFormState={this.updateFormState}/>);
                   break;
                 case 'signature':
-                  return (<SignatureControl index={index} form={this.state.form} updateFormState={this.updateFormState}/>);
+                  return (<SignatureControl key={index} index={index} form={this.state.form} updateFormState={this.updateFormState}/>);
                   break;
               default:
                return null;

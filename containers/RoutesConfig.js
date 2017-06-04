@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import NotUseMenu from './NotUseMenu';
 import Tabs from './Tabs';
 import FormView from './FormView';
 import FormEntryListView from './FormEntryListView';
@@ -34,7 +35,7 @@ export default class RoutesConfig extends Component {
     return (
       <Router>
         <Scene key="root">
-          <Scene key="menu" component={Tabs} initial={true} hideNavBar hideTabBar/>
+          <Scene key="menu" component={NotUseMenu} initial={true} hideNavBar hideTabBar/>
           <Scene key="form" component={FormView} hideNavBar hideTabBar/>
           <Scene key="formEntryListView" component={FormEntryListView} hideNavBar hideTabBar/>
         </Scene>

@@ -37,7 +37,7 @@ export default class HistoryView extends Component {
               for(var i=0; i<results.rows.length;i++){
                   formList.push({
                       id:results.rows.item(i).id,
-                      instances:  results.rows.item(i).numberIntances,
+                      numberInstances:  results.rows.item(i).numberInstances,
                       name: results.rows.item(i).name
                   });
               }
@@ -76,8 +76,12 @@ export default class HistoryView extends Component {
         return (
             <View style={styles.container}>
                 <NavigationBar
-                    title={ {
+                    style={{color:'#09a9d3'}}
+                    tintColor='#09a9d3'
+                    statusBar={{tintColor:'#09a9d3'}}
+                    title={{
                   title: 'History',
+                  tintColor:'white'
                 }}
                 />
 
@@ -86,14 +90,18 @@ export default class HistoryView extends Component {
 
                 <ListView
                     dataSource={this.state.dataSource}
+                    enableEmptySections={true}
                     renderRow={(rowData) => {
                      return (
                          <TouchableHighlight onPress={() => {
                              this.onSelectHistoryForm(rowData);
                          }}>
                              <View style={styles.row}>
-                                 <Text style={styles.text}>
-                                    {rowData.name} and {rowData.instances}
+                                 <Text>
+                                    {rowData.name}
+                                 </Text>
+                                 <Text>
+                                    # {rowData.numberInstances}
                                  </Text>
                              </View>
                          </TouchableHighlight>
@@ -115,16 +123,14 @@ export default class HistoryView extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginBottom: 5,textAlign: 'center'
+        marginBottom: 5,
+        zIndex:-1000
     },
     row: {
         flexDirection: 'row',
-        justifyContent: 'center',
         padding: 10,
         backgroundColor: '#F6F6F6',
-    },
-    text: {
-        flex: 1,
+        justifyContent: 'space-between'
     },
     instructions: {
         textAlign: 'center',

@@ -121,8 +121,12 @@ export default class TemplatesView extends Component {
     return (
       <View style={styles.container}>
         <NavigationBar
-                title={ {
+                style={{color:'#09a9d3'}}
+                tintColor='#09a9d3'
+                statusBar={{tintColor:'#09a9d3'}}
+                title={{
                   title: 'Templates',
+                  tintColor:'white'
                 }}
         />
 
@@ -152,7 +156,8 @@ export default class TemplatesView extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-      marginBottom: 5,textAlign: 'center'
+      marginBottom: 5,
+      zIndex:-1000
   },
   row: {
     flexDirection: 'row',
