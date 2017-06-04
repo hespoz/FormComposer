@@ -39,7 +39,7 @@ class Menu extends Component {
             case 'templates':
                 return (<TemplatesView onSelectTemplate={this.onSelectTemplate}/>);
             case 'history':
-                return (<HistoryView/>);
+                return (<HistoryView onSelectTemplate={this.onSelectTemplate}/>);
         }
     }
 

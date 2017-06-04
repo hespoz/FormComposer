@@ -9,6 +9,7 @@ import DatePickerControl from './controls/DatePickerControl.js';
 import DropDownControl from './controls/DropDownControl.js';
 import SignatureControl from './controls/SignatureControl.js';
 import SQLite from 'react-native-sqlite-storage';
+import DBHelper from './helpers/DBHelper.js';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,81 +29,53 @@ class FormView extends Component {
 
   constructor(props){
     super(props);
+    console.log("breakpoint")
     this.state = {
-      db : SQLite.openDatabase("FormComposerData6.db", "1.0", "Test Database", 200000, this.openCB, this.errorCB),
-      form:props.form
+      form:props.form,
+        formIdSaved: props.formId == undefined || props.formId == null ? null : props.formId
     };
+
+    DBHelper.openDatabase();
+
   }
+
 
   updateFormState = (newForm) => {
     this.setState({form:newForm});
   }
 
+
   saveForm = () => {
-      let formToSave = this.state.form;
-    this.state.db.transaction((tx) => {
+    let formToSave = this.state.form;
+    DBHelper.db.transaction((tx) => {
 
         //Check if the form exists, and if so get the number of parameters.
-        tx.executeSql('SELECT * FROM Forms WHERE name = ?', [this.props.form.form], (tx, results) => {
-
-            var len = results.rows.length;
+        DBHelper.getFormByName(tx, this.props.form.form, (tx, results) => {
             if (results.rows.length >= 1) {
-                //Get number of instances.
-                var id = results.rows.item(0).id;
-                var instances = results.rows.item(0).numberIntances;
-                instances++;
+                if(this.state.formIdSaved == null){
 
-                console.log("id", id);
-                console.log("instances", instances);
+                    var id = results.rows.item(0).id;
+                    var instances = results.rows.item(0).numberIntances;
+                    instances++;
 
-                tx.executeSql('UPDATE Forms SET numberIntances = ? WHERE id = ?', [instances, id], function(tx,res){
+                    DBHelper.insertFormEntry(tx, JSON.stringify(formToSave) ,id, (tx,res) => {
 
-                    console.log("Update forms");
-
-
-
-                    tx.executeSql('SELECT * FROM FormEntry WHERE form_id = ?', [id], (tx, results) => {
-
-                        if (results.rows.length == 0) {
-
-                            tx.executeSql('INSERT INTO FormEntry (formContent, form_id) VALUES (?, ?)', [formToSave, id], function(tx,res){
-                                console.log("INSERT FORMENTRY")
-                            });
-
-                        } else {
-
-
-
-                            tx.executeSql('UPDATE FormEntry SET formContent = ? WHERE id = ?', [Math.random(), results.rows.item(0).id], function(tx,res) {
-                                console.log("Update formentry");
-                            });
-
-                        }
+                        DBHelper.updateFormNumberInstances(instances, id);
+                        this.setState({formIdSaved:res.insertId});
 
                     });
 
-
-
-
-
-                });
-
-
+                } else {
+                    //Update formentry.
+                    DBHelper.updateFormEntry(tx, JSON.stringify(formToSave) , this.state.formIdSaved, function(tx,res) {
+                        console.log("Update formentry");
+                    });
+                }
             } else {
-                tx.executeSql('INSERT INTO Forms(name, numberIntances) VALUES (?, ?)', [this.props.form.form, 1], function (tx,res) {
-                    console.log(res);
-                    console.log('resultSet.insertId: ' + res.insertId);
-                    console.log('resultSet.rowsAffected: ' + res.rowsAffected);
-
-                    //formContent, score, form_id
-
-                    tx.executeSql('INSERT INTO FormEntry(formContent, form_id) VALUES (?, ?)', [formToSave, res.insertId] ,function(resultSet){
-                        console.log('resultSet.insertId: ' + resultSet.insertId);
+                DBHelper.insertForm(tx, this.props.form.form, (tx,res) => {
+                    DBHelper.insertFormEntry(tx,JSON.stringify(formToSave),res.insertId, (tx, res) => {
+                        this.setState({formIdSaved:res.insertId});
                     });
-
-
-                }, function(error) {
-                    console.log('SELECT error: ' + error.message);
                 });
             }
 
