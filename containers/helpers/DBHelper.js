@@ -8,7 +8,7 @@ var DBHelper = {
     db:null,
 
     openDatabase : function () {
-        this.db = SQLite.openDatabase("FormComposerData22.db", "1.0", "Test Database", 200000, this.openCB, this.errorCB);
+        this.db = SQLite.openDatabase("FormComposerData23.db", "1.0", "Test Database", 200000, this.openCB, this.errorCB);
     },
 
     initTables : function () {
@@ -18,7 +18,7 @@ var DBHelper = {
             this.db.transaction((tx) => {
                 tx.executeSql('CREATE TABLE IF NOT EXISTS Forms (id INTEGER PRIMARY KEY AUTOINCREMENT, name, numberInstances)');
                 //formContent saves the form object.
-                tx.executeSql('CREATE TABLE IF NOT EXISTS FormEntry (id INTEGER PRIMARY KEY AUTOINCREMENT, formContent, form_id INTEGER, FOREIGN KEY(form_id) REFERENCES Forms(id))');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS FormEntry (id INTEGER PRIMARY KEY AUTOINCREMENT, formContent, created DATETIME DEFAULT CURRENT_TIMESTAMP, form_id INTEGER, FOREIGN KEY(form_id) REFERENCES Forms(id))');
             });
         }
 

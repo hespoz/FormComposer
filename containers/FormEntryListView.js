@@ -40,7 +40,8 @@ export default class FormEntryListView extends Component {
                 let formList = [];
                 for(var i=0; i<results.rows.length;i++){
                     formList.push({
-                        id:results.rows.item(i).id
+                        id:results.rows.item(i).id,
+                        created: results.rows.item(i).created
                     });
                 }
                 this.setState({dataSource:ds.cloneWithRows(formList)});
@@ -91,7 +92,7 @@ export default class FormEntryListView extends Component {
                          }}>
                              <View style={styles.row}>
                                  <Text style={styles.text}>
-                                    {rowData.id}
+                                    Form created at: {rowData.created}
                                  </Text>
                              </View>
                          </TouchableHighlight>

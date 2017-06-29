@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import NotUseMenu from './NotUseMenu';
-import Tabs from './Tabs';
 import FormView from './FormView';
 import FormEntryListView from './FormEntryListView';
 import {Scene, Router} from 'react-native-router-flux';
