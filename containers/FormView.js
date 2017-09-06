@@ -92,7 +92,24 @@ class FormView extends Component {
   }
 
   saveFormAndSend = () => {
-    Alert.alert('saveForm');
+      console.log("this.state", this.state);
+
+      fetch("http://localhost:3000/templates/pdf",
+          {
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              method: "POST",
+              body: JSON.stringify(this.state.form)
+          }).then((response) => {
+          return response.json()
+      }).then((responseData) => {
+          console.log("responseData", responseData);
+          Alert.alert('saveForm');
+      }).done();
+
+
   }
 
   errorCB = () => {
@@ -148,7 +165,7 @@ class FormView extends Component {
 
         <Button
             onPress={this.saveFormAndSend}
-            title="Save form locally"
+            title="Save as PDF"
             color="#841584"
             accessibilityLabel="Learn more about this purple button"
         />

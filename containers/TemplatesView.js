@@ -8,9 +8,11 @@ import {
   TouchableHighlight
 } from 'react-native'
 
+import axios from 'react-native-axios';
+
 import NavigationBar from 'react-native-navbar';
 
-let templates = [
+/*let templates = [
   {
     form : {
       form:"Mobil Form",
@@ -75,7 +77,7 @@ let templates = [
       ]
     }
   }
-]
+];*/
 
 
 /*
@@ -111,12 +113,33 @@ export default class TemplatesView extends Component {
 
   constructor() {
     super();
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: ds.cloneWithRows(templates),
+      dataSource: ds.cloneWithRows([])
     };
+
+
+      this.fetchData();
+
   }
-  //<Text>{rowData.id}{rowData.text}</Text>
+
+    fetchData = () => {
+        fetch('http://localhost:3000/templates')
+            .then((response) => {
+            return    response.json()
+        })
+            .then((responseData) => {
+                console.log("responseData", responseData);
+                let templates = [];
+                const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+                for(var i=0; i<responseData.length;i++){
+                    templates.push(JSON.parse(responseData[i].templateJson));
+                }
+                this.setState({dataSource: ds.cloneWithRows(templates)});
+            })
+            .done();
+    }
+
   render(){
     return (
       <View style={styles.container}>
